@@ -1,0 +1,26 @@
+
+{% extends 'master.html' %}
+{% block content %}
+
+<div class="col-12 mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="header-title">Enter LeagueID</h4>
+            <form action="/fetchleaguedata" method="post">
+                <div class="form-row align-items-center">
+                    <div class="col-sm-3 my-1">
+                        <label class="sr-only" for="inlineFormInputName">LeagueID</label>
+                        <input type="text" class="form-control" required="required"  name="leagueid" id="leagueid" placeholder="League ID">
+                    </div>
+
+
+                    <div class="col-auto my-1">
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
