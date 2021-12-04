@@ -53,6 +53,25 @@ def ConvertToJson(data):
 
 #print(finalDataFrame)
 
+def createleaderboard(finalDataFrame):
+    Leaderboardlist=[]
+    listplayerid = finalDataFrame['entry_1_entry'].unique()
+    for player in listplayerid:
+        for index, row in finalDataFrame.iterrows():
+            if (row['entry_1_entry']==player):
+                Leaderboardlist.append([row['id'],row['entry_1_entry'],row['entry_1_name'],row['entry_1_player_name'],row['entry_1_points'],row['entry_1_win'],row['entry_1_loss'],row['entry_1_draw'],row['entry_1_total'],row['event']])
+            elif (row['entry_2_entry']==player):
+                Leaderboardlist.append([row['id'],row['entry_2_entry'],row['entry_2_name'],row['entry_2_player_name'],row['entry_2_points'],row['entry_2_win'],row['entry_2_loss'],row['entry_2_draw'],row['entry_2_total'],row['event']])
+
+    LeaderboardDf = pd.DataFrame(Leaderboardlist, columns=['matchid', 'PlayerID','TeamName', 'PlayerName','GWPoints','Win','Loss','Draw','H2Hpoints','GW'])
+    return LeaderboardDf
+
+
+def creatRankBoard(LeaderboardDf):
+
+    Rankdf = LeaderboardDf.groupby(['PlayerID','TeamName','PlayerName'],as_index=False, sort=False).agg({'GWPoints': "sum", 'H2Hpoints': "sum",'Win': 'sum','Loss': 'sum','Draw': 'sum'})
+
+    return Rankdf
 
 @app.route('/')
 def root():
@@ -62,9 +81,17 @@ def root():
 def LeagueDatafetch():
     leagueid = request.form['leagueid']
     finalDataFrame = GetAndAppendAllToOneJson(leagueid)
+    print(finalDataFrame.head)
+    LeaderboardDf = createleaderboard(finalDataFrame)
 
-    return render_template('Dataview.html', column_names=finalDataFrame.columns.values, row_data=list(finalDataFrame.values.tolist()), zip=zip )
+    RankDf = creatRankBoard(LeaderboardDf)
 
+    return render_template('Dataview.html', column_names=RankDf.columns.values, row_data=list(RankDf.values.tolist()), zip=zip )
+
+
+@app.route('/WeeklyReport')
+def weekly():
+    return 'Hi'
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True,threaded=True)
 
