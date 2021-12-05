@@ -13,20 +13,32 @@
                 <table id="dataTable" class="text-center">
                     <thead class="bg-light text-capitalize">
                         <tr>
-                          {% for col in column_names %}
+                          {% for col in titles %}
                             <th>
 
+
                                 {{col}}
+
 
                             </th>
                           {% endfor %}
                         </tr>
                     </thead>
                     <tbody>
-                      {% for row in row_data %}
+                      {% for key , value in tables.iterrows() %}
+                      {% if value['Rank'] == 1 or  value['Rank'] == 2 or  value['Rank'] == 3  %}
+                      <tr style="background-color:#2df160;">
+                      {% elif value['Rank'] == (tables|length)-1 or  value['Rank'] == (tables|length)-2 or  value['Rank'] == (tables|length)  %}
+                      <tr style="background-color:#eb3c07;">
+                      {% else %}
                         <tr>
-                        {% for col, row_ in zip(column_names, row) %}
-                        <td>{{row_}}</td>
+                          {% endif %}
+                          {% for title in titles %}
+
+                                                  <td>{{value[title]}}</td>
+
+
+
                         {% endfor %}
                       </tr>
                       {% endfor %}
@@ -43,7 +55,7 @@
 
 <script type="text/javascript">
 function Weekly(id){
-  
+
   $('#hdfleagueid').val(id);
   document.getElementById("hdfleaguefrm").submit();
 

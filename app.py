@@ -73,11 +73,18 @@ def creatRankBoard(LeaderboardDf):
 
     Rankdf = LeaderboardDf.groupby(['PlayerID','TeamName','PlayerName'],as_index=False, sort=False).agg({'GWPoints': "sum", 'H2Hpoints': "sum",'Win': 'sum','Loss': 'sum','Draw': 'sum'})
 
+    Rankdf = Rankdf.sort_values(['H2Hpoints', 'GWPoints'],ascending=False ).reset_index()
+    Rankdf['Rank'] = Rankdf.index + 1
+    Rankdf.pop('index')
+
+    neworder = ['Rank','TeamName','PlayerName','GWPoints','H2Hpoints','Win','Loss','Draw','PlayerID']
+    Rankdf=Rankdf.reindex(columns=neworder)
+
     return Rankdf
 
 def createH2Hweekly(LeaderboardDf):
 
-
+    playerlist = LeaderboardDf['PlayerName'].unique()
     LeaderboardDf = LeaderboardDf[LeaderboardDf['GWPoints']!=0]
 
 
@@ -85,21 +92,24 @@ def createH2Hweekly(LeaderboardDf):
     H2Hweeklylist=[]
 
 
-    for GW in range(1,TotalGw):
+
+    for player in playerlist:
+        singleplayerlist=[]
+        singleplayerlist.append(player)
+        for GW in range(TotalGw-1 , 0,-1):
+            ply = LeaderboardDf.loc[(LeaderboardDf['GW']==GW) & (LeaderboardDf['PlayerName']==player), 'H2Hpoints'].item()
+
+            singleplayerlist.append(ply)
+
+        H2Hweeklylist.append(singleplayerlist)
 
 
-        A = LeaderboardDf[LeaderboardDf['GW']==GW]
+        columnames=['PlayerName']
+        fullnames = columnames + ['GameWeek_' + str(i) for i in range(TotalGw-1 , 0,-1)]
 
+        H2Hweekly = pd.DataFrame(H2Hweeklylist,columns=fullnames)
 
-        H2Hweekly = A.set_index('PlayerName')['H2Hpoints'].to_json()
-        week = {"GameWeek":'GameWeek:'+str(GW)}
-        intrdta = json.loads(H2Hweekly)
-        intrdta.update(week)
-
-        H2Hweeklylist.append((intrdta))
-
-
-    return H2Hweeklylist
+    return H2Hweekly
 
 def createGWweekly(LeaderboardDf):
 
@@ -142,7 +152,7 @@ def LeagueDatafetch():
 
     RankDf = creatRankBoard(LeaderboardDf)
 
-    return render_template('Dataview.html', column_names=RankDf.columns.values, row_data=list(RankDf.values.tolist()), zip=zip,leagueid=leagueid )
+    return render_template('Dataview.html',tables=RankDf,titles=RankDf.columns.values,leagueid=leagueid )
 
 
 @app.route('/WeeklyReport',methods=['POST'])
@@ -153,8 +163,8 @@ def WeeklyReport():
     playerlist = LeaderboardDf['PlayerName'].unique()
     H2Hweekly = createH2Hweekly(LeaderboardDf)
     GWWeekly = createGWweekly(LeaderboardDf)
-    #return render_template('Dataview.html', column_names=H2Hweekly.columns.values, row_data=list(H2Hweekly.values.tolist()), zip=zip,leagueid=leagueid )
-    return render_template('test.html',H2Hweekly=H2Hweekly, GWWeekly = GWWeekly ,playerlist=playerlist.tolist())
+    #return render_template('test.html', H2Hweekly=H2Hweekly)
+    return render_template('Weekly.html',H2Hweekly=H2Hweekly, H2Htitles = H2Hweekly.columns.values, GWWeekly = GWWeekly ,playerlist=playerlist.tolist())
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True,threaded=True)
 
