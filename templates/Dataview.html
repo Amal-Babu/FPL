@@ -4,7 +4,11 @@
 <div class="col-12 mt-5">
     <div class="card">
         <div class="card-body">
-            <h4 class="header-title">League Data of League</h4>
+            <h4 class="header-title">Leaderboard of {{leagueid}}</h4>
+
+            <a href="#" onclick="Weekly('{{leagueid}}');">Week Wise Report</a>
+            <br/>
+            <br/>
             <div class="data-tables">
                 <table id="dataTable" class="text-center">
                     <thead class="bg-light text-capitalize">
@@ -32,6 +36,20 @@
         </div>
     </div>
 </div>
+
+<form id="hdfleaguefrm" action="/WeeklyReport" method="post">
+<input type="hidden" name="hdfleagueid" id='hdfleagueid'>
+</form>
+
+<script type="text/javascript">
+function Weekly(id){
+  
+  $('#hdfleagueid').val(id);
+  document.getElementById("hdfleaguefrm").submit();
+
+}
+
+</script>
 
 
 {% endblock %}
