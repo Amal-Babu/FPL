@@ -84,11 +84,13 @@ def creatRankBoard(LeaderboardDf):
 
 def createAVGGwp(LeaderboardDf):
 
-    listplayerid = LeaderboardDf['PlayerName'].unique()
+
     LeaderboardDf = LeaderboardDf[LeaderboardDf['GWPoints']!=0]
     AVGPoints = LeaderboardDf.groupby(['PlayerID','TeamName','PlayerName'],as_index=False, sort=False).agg({'GWPoints': "mean"})
 
 
+    AVGPoints = AVGPoints.sort_values(by=['GWPoints'])
+    listplayerid = AVGPoints['PlayerName'].unique()
     AVGlist=[]
     for player in listplayerid:
         for index, row in AVGPoints.iterrows():
