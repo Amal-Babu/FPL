@@ -13,7 +13,7 @@
                 <a href="#" onclick="Weekly('{{leagueid}}');">Week Wise Report</a>
                 <div class="single-table">
                     <div class="table-responsive">
-                        <table class="table text-center">
+                        <table class="table text-center" style='font-famiy:"Courier New", Courier, monospace;'>
                             <thead class="text-uppercase">
                                 <tr>
                                   {% for col in titles1 %}
@@ -45,7 +45,7 @@
                                   {% endif %}
                                   {% for title in titles1 %}
 
-                                                          <td>{{value[title]}}</td>
+                                                          <td><b>{{value[title]}}</b></td>
 
 
 
@@ -97,7 +97,7 @@
                                   {% elif value[title]== 0 %}
                                                           <td style="background:#eb3c07">
                                   {% else %}
-                                  <td>
+                                  <td style="font-size:145%">
                                   {% endif %}
                                                             {{value[title]}}</td>
 
