@@ -82,6 +82,22 @@ def creatRankBoard(LeaderboardDf):
 
     return Rankdf
 
+def createAVGGwp(LeaderboardDf):
+
+    listplayerid = LeaderboardDf['PlayerName'].unique()
+    LeaderboardDf = LeaderboardDf[LeaderboardDf['GWPoints']!=0]
+    AVGPoints = LeaderboardDf.groupby(['PlayerID','TeamName','PlayerName'],as_index=False, sort=False).agg({'GWPoints': "mean"})
+
+
+    AVGlist=[]
+    for player in listplayerid:
+        for index, row in AVGPoints.iterrows():
+            if (player == row['PlayerName']):
+
+                AVGlist.append({'Gametype':'H2H','PlayerName':player,'value':row['GWPoints']})
+
+    return AVGlist
+
 def createH2Hweekly(LeaderboardDf):
 
     playerlist = LeaderboardDf['PlayerName'].unique()
@@ -152,7 +168,12 @@ def LeagueDatafetch():
 
     RankDf = creatRankBoard(LeaderboardDf)
 
-    return render_template('Dataview.html',tables=RankDf,titles=RankDf.columns.values,leagueid=leagueid )
+    RankDf1 = RankDf[['Rank','PlayerName','GWPoints','H2Hpoints']]
+
+    RankDf2 = RankDf[['Rank','PlayerName','Win','Loss','Draw']]
+
+    Avglist = createAVGGwp(LeaderboardDf)
+    return render_template('Dataview.html', Avglist=Avglist,tables1=RankDf1,titles1=RankDf1.columns.values, tables2=RankDf2,titles2=RankDf2.columns.values ,leagueid=leagueid )
 
 
 @app.route('/WeeklyReport',methods=['POST'])
@@ -163,8 +184,11 @@ def WeeklyReport():
     playerlist = LeaderboardDf['PlayerName'].unique()
     H2Hweekly = createH2Hweekly(LeaderboardDf)
     GWWeekly = createGWweekly(LeaderboardDf)
+
     #return render_template('test.html', H2Hweekly=H2Hweekly)
-    return render_template('Weekly.html',H2Hweekly=H2Hweekly, H2Htitles = H2Hweekly.columns.values, GWWeekly = GWWeekly ,playerlist=playerlist.tolist())
+    return render_template('Weekly.html',H2Hweekly=H2Hweekly,
+    H2Htitles = H2Hweekly.columns.values, GWWeekly = GWWeekly ,playerlist=playerlist.tolist())
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True,threaded=True)
 
