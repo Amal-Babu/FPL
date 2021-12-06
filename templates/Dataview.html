@@ -64,48 +64,42 @@
     <div class="col-lg-6 mt-5">
         <div class="card">
             <div class="card-body">
-                <h4 class="header-title">Leaderboard of {{leagueid}}</h4>
+                <h4 class="header-title">Form Board of {{leagueid}}</h4>
                 <a href="#" onclick="Weekly('{{leagueid}}');">Week Wise Report</a>
                 <div class="single-table">
                     <div class="table-responsive">
-                        <table class="table text-center">
+                        <table class="table text-center"  style='font-famiy:"Courier New", Courier, monospace; font-size:68%'>
                             <thead class="text-uppercase">
                                 <tr>
-                                  {% for col in titles2 %}
+                                  {% for col in H2Htitles %}
+                                    <th scope='col'>
 
-                                    <th scope="col">
-
-                                      {% if col == 'Win'%}
-                                      W
-                                      {% elif col == 'Loss' %}
-                                      L
-                                      {% elif col == 'Draw' %}
-                                      D
-                                      {% else %}
 
                                         {{col}}
 
-                                      {% endif %}
 
                                     </th>
-
                                   {% endfor %}
 
                                 </tr>
                             </thead>
                             <tbody>
-                              {% for key , value in tables2.iterrows() %}
+                              {% for key , value in H2Hweekly.iterrows() %}
 
-                              {% if value['Rank'] == 1 or  value['Rank'] == 2 or  value['Rank'] == 3  %}
-                              <tr style="background-color:#2df160;">
-                              {% elif value['Rank'] == (tables2|length)-1 or  value['Rank'] == (tables2|length)-2 or  value['Rank'] == (tables2|length)  %}
-                              <tr style="background-color:#eb3c07;">
-                              {% else %}
                                 <tr>
-                                  {% endif %}
-                                  {% for title in titles2 %}
 
-                                                          <td>{{value[title]}}</td>
+                                  {% for title in H2Htitles %}
+
+                                  {% if value[title]==3 %}
+                                                          <td style="background:#2df160;">
+                                  {% elif value[title]== 1 %}
+                                                          <td style="background:grey">
+                                  {% elif value[title]== 0 %}
+                                                          <td style="background:#eb3c07">
+                                  {% else %}
+                                  <td>
+                                  {% endif %}
+                                                            {{value[title]}}</td>
 
 
 
@@ -293,7 +287,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="header-title">Average Weekly GWP</h4>
-
+                <h9>For better experience rotate phone screen</h9>
                       <div id="chartdiv"></div>
 
                       </div>
