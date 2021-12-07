@@ -139,7 +139,7 @@ def createGWweekly(LeaderboardDf):
     GWWeeklylist=[]
 
 
-    for GW in range(1,TotalGw):
+    for GW in range(1,TotalGw+1):
 
 
         A = LeaderboardDf[LeaderboardDf['GW']==GW]
