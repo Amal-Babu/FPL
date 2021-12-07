@@ -85,7 +85,7 @@ def creatRankBoard(LeaderboardDf):
 def createAVGGwp(LeaderboardDf):
 
 
-    LeaderboardDf = LeaderboardDf[LeaderboardDf['GWPoints']!=0]
+    LeaderboardDf = LeaderboardDf[(LeaderboardDf['Win']!=0) | (LeaderboardDf['Loss']!=0) | (LeaderboardDf['Draw']!=0) ]
     AVGPoints = LeaderboardDf.groupby(['PlayerID','TeamName','PlayerName'],as_index=False, sort=False).agg({'GWPoints': "mean"})
 
 
@@ -103,7 +103,7 @@ def createAVGGwp(LeaderboardDf):
 def createH2Hweekly(LeaderboardDf,playerlist):
 
 
-    LeaderboardDf = LeaderboardDf[LeaderboardDf['GWPoints']!=0]
+    LeaderboardDf = LeaderboardDf[(LeaderboardDf['Win']!=0) | (LeaderboardDf['Loss']!=0) | (LeaderboardDf['Draw']!=0)]
 
 
     TotalGw = LeaderboardDf['GW'].max()
@@ -114,7 +114,7 @@ def createH2Hweekly(LeaderboardDf,playerlist):
     for player in playerlist:
         singleplayerlist=[]
         singleplayerlist.append(player)
-        for GW in range(TotalGw-1 ,TotalGw-6,-1):
+        for GW in range(TotalGw ,TotalGw-5,-1):
             ply = LeaderboardDf.loc[(LeaderboardDf['GW']==GW) & (LeaderboardDf['PlayerName']==player), 'H2Hpoints'].item()
 
             singleplayerlist.append(ply)
@@ -123,7 +123,7 @@ def createH2Hweekly(LeaderboardDf,playerlist):
 
 
         columnames=['PlayerName']
-        fullnames = columnames + ['W' + str(i) for i in range(TotalGw-1 , TotalGw-6,-1)]
+        fullnames = columnames + ['W' + str(i) for i in range(TotalGw , TotalGw-5,-1)]
 
         H2Hweekly = pd.DataFrame(H2Hweeklylist,columns=fullnames)
 
@@ -132,7 +132,7 @@ def createH2Hweekly(LeaderboardDf,playerlist):
 def createGWweekly(LeaderboardDf):
 
 
-    LeaderboardDf = LeaderboardDf[LeaderboardDf['GWPoints']!=0]
+    LeaderboardDf = LeaderboardDf[(LeaderboardDf['Win']!=0) | (LeaderboardDf['Loss']!=0) | (LeaderboardDf['Draw']!=0)]
 
 
     TotalGw = LeaderboardDf['GW'].max()
