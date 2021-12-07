@@ -188,7 +188,7 @@ def WeeklyReport():
     finalDataFrame = GetAndAppendAllToOneJson(leagueid)
     LeaderboardDf = createleaderboard(finalDataFrame)
     playerlist = LeaderboardDf['PlayerName'].unique()
-    H2Hweekly = createH2Hweekly(LeaderboardDf)
+    H2Hweekly = createH2Hweekly(LeaderboardDf,playerlist)
     GWWeekly = createGWweekly(LeaderboardDf)
 
     #return render_template('test.html', H2Hweekly=H2Hweekly)
